@@ -19,13 +19,11 @@ RUN mkdir -p /opt/ut2003srv
 COPY $serverpkg /tmp/install.tar
 WORKDIR /opt/ut2003srv
 RUN tar -xvf /tmp/install.tar
+RUN rm /tmp/install.tar
 RUN echo $CDKEY >> /opt/ut2003srv/ut2003_dedicated/System/cdkey
 WORKDIR /opt/ut2003srv/ut2003_dedicated/System
-RUN sed -i 's/bEnabled=False/bEnabled=True/' Default.ini
+RUN sed -i 's/bEnabled=False/bEnabled=True\nListenPort=8088/' Default.ini
 RUN sed -i 's/ut2003master1.epicgames.com/utmaster.openspy.net/' Default.ini
 RUN sed -i 's/NvidiaLogo.ut2/CTF-Face3.ut2/' Default.ini
-
-#CMD \
-# sleep infinity & wait
 
 CMD ["/bin/sh", "-c", "cp --update=none Default.ini $INIFILE && linux32 ./ucc-bin server $MAP?AdminName=$WEBUSER?AdminPassword=$WEBPASS -nohomedir -ini=$INIFILE"]
